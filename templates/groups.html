@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>GROUPS</h1>
+<a href="/">
+    <button value="mainPage">MainPage</button>
+</a>
+<a href="./users">
+    <button value="users">Users</button>
+</a>
+
+<a href="./roles">
+    <button value="groups">Roles</button>
+</a>
+
+<form method="POST" action="./add_group">
+    {{ form_add_group.csrf_token }}
+    {{ form_add_group.name.label}} {{ form_add_group.name(size=10) }}
+    <input type="submit" value="Add group">
+</form>
+
+<table>
+    <colgroup>
+        <col span="2" style="background:aquamarine">
+        <col style="background-color:deeppink">
+    </colgroup>
+    <tr>
+        <th>group</th>
+        <th>user</th>
+    </tr>
+    {% for group in data %}
+    <tr>
+        <td>
+            <form method="POST" action="./update_group">
+                {{ form_updt.csrf_token }}
+                {{ form_updt.oldname (value = group.name) }}
+                {{ form_updt.newname (value = group.name) }}
+
+                <input type="submit" value="Update">
+            </form>
+
+            <form method="POST" action="./delete_group">
+                {{ form_delete_group.csrf_token }}
+                {{ form_delete_group.group_id (value=group.id) }}
+
+                <input type="submit" value="Delete">
+            </form>
+        <td>
+            {% for user in group.users %}
+                 <form method="POST" action="./delete_group_user">
+                {{ forom_delete_group_user.csrf_token }}
+                {{ forom_delete_group_user.user_id (value = user.id) }}
+                {{ forom_delete_group_user.id (value = group.id) }}
+                {{ forom_delete_group_user.readonly (value = user.name) }}
+
+                <!--                <input type="hidden" value="{{user.id}}" name="user_id">-->
+                <!--                <input type="hidden" value="{{group.id}}" name="group_id">-->
+                <!--                <input readonly type="text" value="'{{group.name}}'">-->
+                <input type="submit" value="Delete">
+            </form>
+
+            {% endfor %}
+
+            <form method="POST" action="./update_group_user">
+                {{ form_select_group_user.csrf_token }}
+                {{ form_select_group_user.user_id (value = group.id) }}
+                {{ form_select_group_user.id }}
+                <input type="submit" value="add">
+            </form>
+
+        </td>
+
+        {% endfor %}
+    </tr>
+</table>
+
+</body>
+</html>

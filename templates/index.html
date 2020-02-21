@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>MAIN PAGE</h1>
+
+{% for group in current_user._groups: %}
+{% for role in group._roles: %}
+{% if role == administrator: %}
+<a href="./users">
+    <button value="users">Users</button>
+</a>
+
+<a href="./roles">
+    <button value="roles">Roles</button>
+</a>
+
+<a href="./groups">
+    <button value="groups">Groups</button>
+</a>
+
+<a href="./logout">Logout</a>
+<div> HELLO, {{ current_user.name }}</div>
+
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+
+{% for obj in current_user._roles: %}
+{% if obj == administrator: %}
+
+<a href="./users">
+    <button value="users">Users</button>
+</a>
+
+<a href="./roles">
+    <button value="roles">Roles</button>
+</a>
+
+<a href="./groups">
+    <button value="groups">Groups</button>
+</a>
+
+<a href="./logout">Logout</a>
+<div> HELLO, {{ current_user.name }}</div>
+
+{%endif%}
+{% endfor %}
+
+
+
+<a href="./users">
+    <button value="users">Users</button>
+</a>
+<a href="./logout">Logout</a>
+<div> HELLO, {{ current_user.name }}</div>
+
+
+</body>
+</html>

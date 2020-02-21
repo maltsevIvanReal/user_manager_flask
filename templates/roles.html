@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Groups</title>
+</head>
+<body>
+<h1>ROLES</h1>
+<a href="/">
+    <button value="mainPage">MainPage</button>
+</a>
+<a href="./users">
+    <button value="users">Users</button>
+</a>
+
+<a href="./groups">
+    <button value="groups">Groups</button>
+</a>
+
+<form method="POST" action="./add_role">
+    {{ form_add_role.csrf_token }}
+    {{ form_add_role.name.label}} {{ form_add_role.name(size=10) }}
+    <input type="submit" value="Add role">
+</form>
+
+
+<table>
+    <colgroup>
+        <col span="2" style="background:aquamarine">
+        <col style="background-color:deeppink">
+    </colgroup>
+    <tr>
+        <th>role</th>
+        <th>user has role</th>
+        <th>group has role</th>
+    </tr>
+    {% for role in data %}
+    <tr>
+        <td>
+            <form method="POST" action="./update_role">
+                {{ form_update_role.csrf_token }}
+                {{ form_update_role.oldname (value = role.name) }}
+                {{ form_update_role.newname (value = role.name) }}
+
+                {% if role.name != "employee" and role.name != "administrator"%}
+                <input type="submit" value="Update">
+                {% endif %}
+
+
+            </form>
+
+            <form method="POST" action="./delete_role">
+                {{ form_delete_role.csrf_token }}
+                {{ form_delete_role.id (value=role.id)}}
+                {% if role.name != "employee" and role.name != "administrator"%}
+                <input type="submit" value="Delete">
+                {% endif %}
+            </form>
+
+
+        </td>
+        <td>
+            {% for user_role in role.users %}
+            <form method="POST" action="./delete_role_user">
+                {{ form_delete_role_user.csrf_token }}
+                {{ form_delete_role_user.user_id (value = user_role.id) }}
+                {{ form_delete_role_user.id (value = role.id) }}
+                {{ form_delete_role_user.readonly (value = user_role.name) }}
+                {% if role.name != "employee" and role.name != "administrator"%}
+                <input type="submit" value="Delete">
+                <!--                TODO проверка на бэке!!!!!!!!!!!!!!!!!!!!!!!!!-->
+                {% endif %}
+
+            </form>
+            {% endfor %}
+
+            <form method="POST" action="./update_role_user">
+
+                {{ from_select_role_user.csrf_token }}
+                {{ from_select_role_user.user_id (value = role.id) }}
+                {{ from_select_role_user.role_id }}
+
+                {% if role.name == "employee"%}
+                <input type="submit" value="add administrator role">
+                {% elif role.name == "administrator" %}
+                <input type="submit" value="add employee role">
+                {%else%}
+                <input type="submit" value="add">
+                {% endif %}
+
+                                <!--                TODO проверка на бэке!!!!!!!!!!!!!!!!!!!!!!!!!-->
+            </form>
+        </td>
+        <td>
+            {% for group in role.groups %}
+            <form method="POST" action="./delete_group_role">
+                {{ form_delete_group_role.csrf_token }}
+                {{ form_delete_group_role.group_id (value = group.id) }}
+                {{ form_delete_group_role.id (value = role.id) }}
+                {{ form_delete_group_role.readonly (value = group.name) }}
+
+
+                <input type="submit" value="Delete">
+            </form>
+            {% endfor %}
+
+            <form method="POST" action="./update_role_group">
+                {{ form_select_group_role.csrf_token }}
+                {{ form_select_group_role.role_id (value = role.id) }}
+                {{ form_select_group_role.group_id }}
+
+                <input type="submit" value="add">
+            </form>
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+<body>
+<h1>USERS</h1>
+<a href="/">
+    <button value="mainPage">MainPage</button>
+</a>
+
+<a href="./roles">
+    <button value="roles">Roles</button>
+</a>
+
+<a href="./groups">
+    <button value="groups">Groups</button>
+</a>
+<!--<form method="POST" action="./add_user"> TODO super-user-->
+<!--    {{ form_add.csrf_token }}-->
+<!--    {{ form_add.name.label}} {{ form_add.name(size=10) }}-->
+<!--    <input type="submit" value="Add user">-->
+<!--</form>-->
+
+
+<table>
+    <colgroup>
+        <col span="2" style="background:aquamarine">
+        <col style="background-color:deeppink">
+    </colgroup>
+    <tr>
+        <th>user</th>
+        <th>user has role</th>
+        <th>user is in group</th>
+    </tr>
+    {% for user in data %}
+    <tr>
+        <td>
+            <form method="POST" action="./update_user">
+                {{ form_updt.csrf_token }}
+                {{ form_updt.oldname (value = user.name) }}
+                {{ form_updt.newname (value = user.name) }}
+                {% for obj in current_user._roles %}
+                {% if obj == administrator %}
+                <input type="submit" value="Update">
+                {% endif %}
+                {% endfor %}
+            </form>
+
+
+            <form method="POST" action="./delete_user">
+                {{ form_del.csrf_token }}
+                {{ form_del.user_id (value=user.id) }}
+
+                {% for obj in current_user._roles %}
+                {% if obj == administrator %}
+                <input type="submit" value="Delete">
+                {% endif %}
+                {% endfor %}
+            </form>
+
+        </td>
+
+        <td>
+            {% for role in user.roles %}
+            <form method="POST" action="./delete_user_role">
+                {{ form_delete_user_role.csrf_token }}
+                {{ form_delete_user_role.user_id (value = user.id) }}
+                {{ form_delete_user_role.id (value = role.id) }}
+                {{ form_delete_user_role.readonly (value = role.name) }}
+
+                {% for obj in current_user._roles %}
+                {% if obj == administrator %}
+
+                {% if role.name == "employee"%}
+                <input type="submit" value="add admin role">
+                {% elif role.name == "administrator"%}
+                <input type="submit" value="add employee role">
+                {% else %}
+                <input type="submit" value="delete role">
+                {% endif %}
+
+                {% endif %}
+                {% endfor %}
+            </form>
+
+            {% endfor %}
+
+            <form method="POST" action="./update_user_role">
+
+                {{ form_select_user_role.csrf_token }}
+                {{ form_select_user_role.user_id (value = user.id) }}
+                {{ form_select_user_role.role_id }}
+                <input type="submit" value="add">
+            </form>
+
+
+        </td>
+        <td>
+            {% for group in user.groups %}
+            <form method="POST" action="./delete_user_group">
+                {{ form_delete_user_group.csrf_token }}
+                {{ form_delete_user_group.user_id (value = user.id) }}
+                {{ form_delete_user_group.id (value = group.id) }}
+                {{ form_delete_user_group.readonly (value = group.name) }}
+
+                <input type="submit" value="Delete">
+            </form>
+
+            {% endfor %}
+
+            <form method="POST" action="./update_user_group">
+
+                {{ form_select_user_group.csrf_token }}
+                {{ form_select_user_group.user_id (value = user.id) }}
+                {{ form_select_user_group.id }}
+
+                <input type="submit" value="add">
+            </form>
+
+
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+</body>
+</html>
